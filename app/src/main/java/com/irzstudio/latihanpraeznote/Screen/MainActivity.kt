@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.irzstudio.latihanpraeznote.Adapter.OnItemListener
@@ -18,11 +19,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var dataBase : ItemDatabase? = null
-
     private val dataItem : ArrayList<Item> = ArrayList()
-
     lateinit var adapterItem : RecyclerAdapter
-
     lateinit var sharedPref : PreferencesHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         dataBase = ItemDatabase.getInstance(this)
-
         sharedPref = PreferencesHelper(this)
 
         setSupportActionBar(txt_toolbar)
@@ -49,9 +46,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveItem(){
         //menyimpan data(item) di DB
-        val input = et_input.text.toString()
-        val item = Item(nameitem = input)
-        dataBase?.itemDao()?.insert(item)
+        if (et_input.length() == 0) {
+            Toast.makeText(applicationContext, "Silahkan ketikkan sesuatu", Toast.LENGTH_SHORT)
+                .show()
+        }else {
+            val input = et_input.text.toString()
+            val item = Item(nameitem = input)
+            dataBase?.itemDao()?.insert(item)
+        }
     }
 
     private  fun showDataAdapter(){
@@ -69,7 +71,12 @@ class MainActivity : AppCompatActivity() {
         dataItem.add(itemDummy2)
          */
 
-
+        adapterItem.onClickListener = object  : OnItemListener {
+            override fun onDelete(item: Item) {
+                dataBase?.itemDao()?.delete(item)
+                showDataAdapter()
+            }
+        }
 
         rv_recyclerview.adapter = adapterItem
         rv_recyclerview.layoutManager = LinearLayoutManager(this)
