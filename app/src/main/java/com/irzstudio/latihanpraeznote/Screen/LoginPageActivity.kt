@@ -24,7 +24,7 @@ class LoginPageActivity : AppCompatActivity() {
             if (et_username.text.isNotEmpty()){
                 sharePref.put(Constant.PREF_USERNAME, et_username.text.toString())
                 sharePref.put(Constant.PREF_IS_LOGIN, true)
-                Toast.makeText(applicationContext, "Berhasil Masuk", Toast.LENGTH_SHORT)
+                Toast.makeText(applicationContext, "Berhasil Masuk", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }

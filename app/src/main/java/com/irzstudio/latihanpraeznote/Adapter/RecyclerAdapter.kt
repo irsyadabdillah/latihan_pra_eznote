@@ -12,6 +12,8 @@ import kotlinx.android.synthetic.main.item_list.view.*
 class RecyclerAdapter(val listItem: ArrayList<Item>) :
     RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder>() {
 
+    var onClickListener: OnItemListener? = null
+
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item : Item){
             itemView.tv_item.text = item.nameitem
@@ -21,6 +23,13 @@ class RecyclerAdapter(val listItem: ArrayList<Item>) :
             }else{
                 itemView.setBackgroundColor(itemView.context.resources.getColor(R.color.grey))
             }
+
+            //untuk menghapus list dengan menggunakan ic_delete yg terhubung dengan interface di OnItemListener
+            itemView.ic_delete.setOnClickListener {
+                onClickListener?.onDelete(item)
+            }
+
+
         }
     }
 

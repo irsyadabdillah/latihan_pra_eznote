@@ -6,14 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.irzstudio.latihanpraeznote.Adapter.OnItemListener
 import com.irzstudio.latihanpraeznote.Adapter.RecyclerAdapter
 import com.irzstudio.latihanpraeznote.Data.Item
+import com.irzstudio.latihanpraeznote.Data.ItemDatabase
 import com.irzstudio.latihanpraeznote.HelperPref.Constant
 import com.irzstudio.latihanpraeznote.HelperPref.PreferencesHelper
 import com.irzstudio.latihanpraeznote.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private var dataBase : ItemDatabase? = null
 
     private val dataItem : ArrayList<Item> = ArrayList()
 
@@ -25,26 +29,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        dataBase = ItemDatabase.getInstance(this)
+
         sharedPref = PreferencesHelper(this)
 
         setSupportActionBar(txt_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = sharedPref.getString(Constant.PREF_USERNAME)
 
-        showDataAdapter()
+        btn_save.setOnClickListener{
+            saveItem()
+            showDataAdapter()
+        }
 
+
+        showDataAdapter()
 
     }
 
+    private fun saveItem(){
+        //menyimpan data(item) di DB
+        val input = et_input.text.toString()
+        val item = Item(nameitem = input)
+        dataBase?.itemDao()?.insert(item)
+    }
 
     private  fun showDataAdapter(){
         adapterItem = RecyclerAdapter(dataItem)
+        //untuk menghapus data agar yg sebelumnya tidak di tampilkan
+        dataItem.clear()
+        //menampilkan data di DB
+        val dataFromDb = dataBase?.itemDao()?.getAll().orEmpty()
+        dataItem.addAll(dataFromDb)
 
-        val itemDummy = Item(nameitem = "Jeruk")
+        /*val itemDummy = Item(nameitem = "Jeruk")
         val itemDummy2 = Item(nameitem = "Anggur")
 
         dataItem.add(itemDummy)
         dataItem.add(itemDummy2)
+         */
+
+
 
         rv_recyclerview.adapter = adapterItem
         rv_recyclerview.layoutManager = LinearLayoutManager(this)
