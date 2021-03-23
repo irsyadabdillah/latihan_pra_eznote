@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             val input = et_input.text.toString()
             val item = Item(nameitem = input)
             dataBase?.itemDao()?.insert(item)
+            et_input.setText("")
         }
     }
 
@@ -102,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setPositiveButton("Yes") { _, _ ->
             dataBase?.itemDao()?.deleteAll()
+            showDataAdapter()
             Toast.makeText(applicationContext, "Berhasil menghapus semuanya", Toast.LENGTH_LONG)
                 .show()
         }
