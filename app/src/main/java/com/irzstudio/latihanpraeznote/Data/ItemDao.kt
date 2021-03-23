@@ -4,16 +4,20 @@ import androidx.room.*
 
 @Dao
 interface ItemDao {
-    @Query("SELECT * From item")
+    @Query("SELECT * From item_table")
     fun getAll():List<Item>
 
     @Insert //(onConflict = REPLACE), agar id tidak ad yg sama ketika tanpa autogenerate
-    fun insert(note: Item)
+    fun insert(item: Item)
 
     @Delete
-    fun delete(note: Item)
+    fun delete(item: Item)
 
     @Update
-    fun update(note: Item)
+    fun update(item: Item)
+
+    @Query("DELETE From item_table")
+    fun deleteAll()
+
 
 }

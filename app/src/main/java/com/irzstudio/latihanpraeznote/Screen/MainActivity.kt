@@ -1,11 +1,12 @@
 package com.irzstudio.latihanpraeznote.Screen
 
-import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.irzstudio.latihanpraeznote.Adapter.OnItemListener
 import com.irzstudio.latihanpraeznote.Adapter.RecyclerAdapter
@@ -39,10 +40,10 @@ class MainActivity : AppCompatActivity() {
             showDataAdapter()
         }
 
-
         showDataAdapter()
 
     }
+
 
     private fun saveItem(){
         //menyimpan data(item) di DB
@@ -83,5 +84,32 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //menghubungkan appbar menu ke tampilan page
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the main_menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.appbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_delete){
+            deleteAllItem()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteAllItem () {
+        val builder = AlertDialog.Builder(this)
+        builder.setPositiveButton("Yes") { _, _ ->
+            dataBase?.itemDao()?.deleteAll()
+            Toast.makeText(applicationContext, "Berhasil menghapus semuanya", Toast.LENGTH_LONG)
+                .show()
+        }
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.setTitle("Hapus Semuanya?")
+        builder.setMessage("Apakah kamu yakin ingin menghapus semuanya?")
+        builder.create().show()
+
+    }
 
 }
